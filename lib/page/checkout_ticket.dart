@@ -129,8 +129,19 @@ class _CheckoutTicketState extends State<CheckoutTicket> {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.pop(context);
+                    // Ambil data tiket
+                    final doc = await _service.getTicketById(widget.idTicket);
+                    final ticketData = doc.data();
+                    if (ticketData != null) {
+                      // Tambahkan ke koleksi checkout
+                      await _service.addCheckout({
+                        ...ticketData,
+                        'idTicket': widget.idTicket,
+                        'checkoutAt': FieldValue.serverTimestamp(),
+                      });
+                    }
                     Navigator.push(context, MaterialPageRoute(builder: (_) => Receipt(idTicket: widget.idTicket)));
                   },
                   style: ElevatedButton.styleFrom(

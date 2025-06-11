@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:ticket_app/services/firebase.dart';
+import 'package:ticket_app/page/history_buy.dart';
 
 class Receipt extends StatefulWidget {
   final String idTicket;
@@ -194,30 +195,53 @@ class _ReceiptState extends State<Receipt> {
 
   // Tombol Aksi: Unduh & Kembali
   Widget _actionButtons(Map<String, dynamic> data) {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: OutlinedButton(
-            onPressed: () => Navigator.pop(context),
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Color(0xFF2666EC)),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              padding: const EdgeInsets.symmetric(vertical: 14),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () => Navigator.pop(context),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFF2666EC)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                child: const Text("Kembali", style: TextStyle(color: Color(0xFF2666EC))),
+              ),
             ),
-            child: const Text("Kembali", style: TextStyle(color: Color(0xFF2666EC))),
-          ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () async => await generatePdf(data),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2666EC),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                child: const Text("Unduh bukti"),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: ElevatedButton(
-            onPressed: () async => await generatePdf(data),
+        const SizedBox(height: 16),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const HistoryBuy()),
+              );
+            },
+            icon: const Icon(Icons.history, color: Colors.white),
+            label: const Text("Riwayat Pembelian", style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF2666EC),
-              foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
-            child: const Text("Unduh bukti"),
           ),
         ),
       ],
